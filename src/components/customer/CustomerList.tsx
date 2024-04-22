@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Table} from "react-bootstrap";
+import {Button, Table} from "react-bootstrap";
 import {getAllCustomers} from "../../service/CustomerService";
+import {useNavigate, useNavigation} from "react-router-dom";
 
 const CustomerList = () => {
     const [customerList, setCustomerList] = useState([]);
+    const navigator = useNavigate();
 
     useEffect(()=> {
         getAllCustomers().then((response) => {
@@ -14,9 +16,15 @@ const CustomerList = () => {
         })
     }, [])
 
+    const goToAddCustomer = () =>{
+        navigator("/customers/add");
+    }
+
+
     return (
         <div className={'container'}>
             <h2 className={'text-center'}>List of Customers</h2>
+            <Button variant="primary" style={{marginBottom: 10}} onClick={goToAddCustomer}>Add New Customer</Button>
             <Table>
                 <thead>
                 <tr>
