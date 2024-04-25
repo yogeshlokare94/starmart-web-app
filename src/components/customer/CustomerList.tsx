@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Table} from "react-bootstrap";
-import {getAllCustomers} from "../../service/CustomerService";
-import {useNavigate, useNavigation} from "react-router-dom";
+import {deleteCustomer,  getAllCustomers} from "../../service/CustomerService";
+import {useNavigate} from "react-router-dom";
 
 const CustomerList = () => {
     const [customerList, setCustomerList] = useState([]);
+    const [refreshKey, setRefreshKey] = useState(0);
     const navigator = useNavigate();
 
     useEffect(()=> {
@@ -14,12 +15,23 @@ const CustomerList = () => {
         }).catch(error => {
             console.log(error);
         })
-    }, [])
+    }, [refreshKey])
 
     const goToAddCustomer = () =>{
         navigator("/customers/add");
     }
 
+    function updateCustomerById(id: number){
+        navigator("/customer/update/"+id);
+    }
+
+    const deleteCustomerById = (id:number) =>{
+        deleteCustomer(id).then((response) => {
+           setRefreshKey(refreshKey => refreshKey + 1);
+        }).catch((error) =>{
+            console.log(error);
+        })
+    }
 
     return (
         <div className={'container'}>
@@ -36,12 +48,13 @@ const CustomerList = () => {
                     <th>Email</th>
                     <th>Contact No</th>
                     <th>Is Active?</th>
+                    <th colSpan={2}>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {customerList.map((customer: any, index) =>
                     <tr key={customer.id}>
-                        <td>{index+1}</td>
+                        <td>{index + 1}</td>
                         <td>{customer.id}</td>
                         <td>{customer.firstName}</td>
                         <td>{customer.lastName}</td>
@@ -49,6 +62,8 @@ const CustomerList = () => {
                         <td>{customer.email}</td>
                         <td>{customer.contactNo}</td>
                         <td>{customer.active ? "Yes" : "No"}</td>
+                        <td><Button variant="success" onClick={() => updateCustomerById(customer.id)}>Edit</Button></td>
+                        <td><Button variant="warning" onClick={()=> deleteCustomerById(customer.id)}>Delete</Button></td>
                     </tr>
                 )}
                 </tbody>

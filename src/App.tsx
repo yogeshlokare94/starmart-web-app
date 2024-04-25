@@ -16,6 +16,7 @@ function App() {
                     <Route path="/customers" element={<CustomerList />} />
                     <Route path="/items" element={<ItemsList />} />
                     <Route path={"/customers/add"} Component={AddCustomer}/>
+                    <Route path={"/customer/update/:id"} element={<AddCustomer/>}/>
                 </Routes>
             </BrowserRouter>
         </>
